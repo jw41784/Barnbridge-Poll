@@ -468,35 +468,35 @@
     </div>
 
     <script>
-        // ============================================
-        // CONFIGURATION - UPDATE THIS WITH YOUR SCRIPT URL
-        // ============================================
-        const SCRIPT_URL = https://script.google.com/macros/s/AKfycbzB-x9aX7ubgQOLxIGeWh8rvY9FONuwUdLPgmPBPyAAgl5xYsiJXARgbqApi6LnmfVstQ/exec;
-        // ============================================
+        // ===========================================
+        // CONFIGURATION
+        // ===========================================
+        // Replace with your Google Apps Script web app URL
+        const SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_GOOGLE_SCRIPT_ID/exec';
 
-        // Date options: Evenings in first two weeks of January 2026
+        // Meeting dates: First two weeks of January 2026
+        const MEETING_TIME = '7:00 PM';
         const dates = [
-            { id: 'jan1', day: 'Wed', full: 'January 1, 2026', evening: '7:00 PM' },
-            { id: 'jan2', day: 'Thu', full: 'January 2, 2026', evening: '7:00 PM' },
-            { id: 'jan3', day: 'Fri', full: 'January 3, 2026', evening: '7:00 PM' },
-            { id: 'jan4', day: 'Sat', full: 'January 4, 2026', evening: '7:00 PM' },
-            { id: 'jan5', day: 'Sun', full: 'January 5, 2026', evening: '7:00 PM' },
-            { id: 'jan6', day: 'Mon', full: 'January 6, 2026', evening: '7:00 PM' },
-            { id: 'jan7', day: 'Tue', full: 'January 7, 2026', evening: '7:00 PM' },
-            { id: 'jan8', day: 'Wed', full: 'January 8, 2026', evening: '7:00 PM' },
-            { id: 'jan9', day: 'Thu', full: 'January 9, 2026', evening: '7:00 PM' },
-            { id: 'jan10', day: 'Fri', full: 'January 10, 2026', evening: '7:00 PM' },
-            { id: 'jan11', day: 'Sat', full: 'January 11, 2026', evening: '7:00 PM' },
-            { id: 'jan12', day: 'Sun', full: 'January 12, 2026', evening: '7:00 PM' },
-            { id: 'jan13', day: 'Mon', full: 'January 13, 2026', evening: '7:00 PM' },
-            { id: 'jan14', day: 'Tue', full: 'January 14, 2026', evening: '7:00 PM' },
+            { id: 'jan1',  day: 'Wed', full: 'January 1, 2026'  },
+            { id: 'jan2',  day: 'Thu', full: 'January 2, 2026'  },
+            { id: 'jan3',  day: 'Fri', full: 'January 3, 2026'  },
+            { id: 'jan4',  day: 'Sat', full: 'January 4, 2026'  },
+            { id: 'jan5',  day: 'Sun', full: 'January 5, 2026'  },
+            { id: 'jan6',  day: 'Mon', full: 'January 6, 2026'  },
+            { id: 'jan7',  day: 'Tue', full: 'January 7, 2026'  },
+            { id: 'jan8',  day: 'Wed', full: 'January 8, 2026'  },
+            { id: 'jan9',  day: 'Thu', full: 'January 9, 2026'  },
+            { id: 'jan10', day: 'Fri', full: 'January 10, 2026' },
+            { id: 'jan11', day: 'Sat', full: 'January 11, 2026' },
+            { id: 'jan12', day: 'Sun', full: 'January 12, 2026' },
+            { id: 'jan13', day: 'Mon', full: 'January 13, 2026' },
+            { id: 'jan14', day: 'Tue', full: 'January 14, 2026' },
         ];
+        // ===========================================
 
-        // Store selections
+        // State
         const selections = {};
         dates.forEach(d => selections[d.id] = null);
-
-        // Check if configured
         const isConfigured = !SCRIPT_URL.includes('YOUR_GOOGLE');
 
         // Icons
