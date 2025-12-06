@@ -392,6 +392,67 @@
             color: var(--terracotta);
         }
 
+        .best-dates {
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .best-dates h3 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            color: var(--charcoal);
+        }
+
+        .best-date-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 8px;
+        }
+
+        .best-date-item.rank-1 {
+            background: rgba(124, 144, 130, 0.15);
+            border: 2px solid var(--sage);
+        }
+
+        .best-date-rank {
+            font-weight: 600;
+            color: var(--sage);
+            min-width: 24px;
+        }
+
+        .best-date-info {
+            flex: 1;
+        }
+
+        .best-date-name {
+            font-weight: 500;
+        }
+
+        .best-date-counts {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        .best-date-bar {
+            width: 80px;
+            height: 8px;
+            background: var(--light-gray);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .best-date-bar-fill {
+            height: 100%;
+            background: var(--sage);
+            border-radius: 4px;
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 24px 16px;
@@ -462,6 +523,10 @@
 
         <div id="responses-section" class="card responses-card" style="display: none;">
             <h2>Responses</h2>
+            <div id="best-dates" class="best-dates" style="display: none;">
+                <h3>Best Dates</h3>
+                <div id="best-dates-list"></div>
+            </div>
             <div id="responses-table" class="responses-table">
                 <div class="loading">Loading responses...</div>
             </div>
@@ -559,6 +624,7 @@
                 const data = await response.json();
                 
                 if (data.responses && data.responses.length > 0) {
+                    renderBestDates(data.responses);
                     renderResponsesTable(data.responses);
                     updateCounts(data.responses);
                     document.getElementById('responses-section').style.display = 'block';
@@ -581,6 +647,48 @@
                     countEl.textContent = parts.join(', ');
                 }
             });
+        }
+
+        // Render best dates summary
+        function renderBestDates(responses) {
+            if (responses.length === 0) return;
+
+            // Calculate scores for each date (yes = 2 points, maybe = 1 point)
+            const dateScores = dates.map(date => {
+                const yesCount = responses.filter(r => r[date.id] === 'yes').length;
+                const maybeCount = responses.filter(r => r[date.id] === 'maybe').length;
+                const score = (yesCount * 2) + maybeCount;
+                return { ...date, yesCount, maybeCount, score };
+            });
+
+            // Sort by score descending
+            dateScores.sort((a, b) => b.score - a.score);
+
+            // Get max score for percentage calculation
+            const maxScore = dateScores[0].score;
+            if (maxScore === 0) return;
+
+            // Show top 5 dates with any interest
+            const topDates = dateScores.filter(d => d.score > 0).slice(0, 5);
+
+            const container = document.getElementById('best-dates-list');
+            container.innerHTML = topDates.map((date, index) => {
+                const pct = Math.round((date.score / maxScore) * 100);
+                return `
+                    <div class="best-date-item ${index === 0 ? 'rank-1' : ''}">
+                        <span class="best-date-rank">#${index + 1}</span>
+                        <div class="best-date-info">
+                            <div class="best-date-name">${date.day}, ${date.full}</div>
+                            <div class="best-date-counts">${date.yesCount} yes, ${date.maybeCount} maybe</div>
+                        </div>
+                        <div class="best-date-bar">
+                            <div class="best-date-bar-fill" style="width: ${pct}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('best-dates').style.display = 'block';
         }
 
         // Render responses table
