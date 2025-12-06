@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barnbridge Neighborhood Meeting Poll</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Fraunces:wght@600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cream: #FDF8F3;
+            --warm-white: #FFFBF7;
+            --sage: #7C9082;
+            --sage-light: #A8BBA9;
+            --sage-dark: #5A6B5E;
+            --terracotta: #C4785A;
+            --terracotta-light: #E8A889;
+            --charcoal: #2D3436;
+            --gray: #636E72;
+            --light-gray: #DFE6E9;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--charcoal);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .icon {
+            width: 64px;
+            height: 64px;
+            background: var(--sage);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            box-shadow: 0 4px 12px rgba(124, 144, 130, 0.3);
+        }
+
+        .icon svg {
+            width: 32px;
+            height: 32px;
+            fill: white;
+        }
+
+        h1 {
+            font-family: 'Fraunces', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--charcoal);
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            color: var(--gray);
+            font-size: 1.05rem;
+        }
+
+        .card {
+            background: var(--warm-white);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.04);
+            margin-bottom: 24px;
+        }
+
+        .name-section {
+            margin-bottom: 32px;
+        }
+
+        .name-section label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--charcoal);
+        }
+
+        .name-input {
+            width: 100%;
+            max-width: 320px;
+            padding: 14px 18px;
+            font-size: 1rem;
+            font-family: 'DM Sans', sans-serif;
+            border: 2px solid var(--light-gray);
+            border-radius: 12px;
+            background: white;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .name-input:focus {
+            outline: none;
+            border-color: var(--sage);
+            box-shadow: 0 0 0 4px rgba(124, 144, 130, 0.15);
+        }
+
+        .dates-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .dates-header h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .legend {
+            display: flex;
+            gap: 16px;
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        .legend span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.yes { background: var(--sage); }
+        .legend-dot.maybe { background: var(--terracotta-light); }
+        .legend-dot.no { background: var(--light-gray); }
+
+        .date-grid {
+            display: grid;
+            gap: 8px;
+        }
+
+        .date-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+        }
+
+        .date-row:last-child {
+            border-bottom: none;
+        }
+
+        .date-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .date-day {
+            font-weight: 500;
+            color: var(--charcoal);
+        }
+
+        .date-full {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .response-count {
+            font-size: 0.8rem;
+            color: var(--sage);
+            margin-top: 2px;
+        }
+
+        .options {
+            display: flex;
+            gap: 8px;
+        }
+
+        .option-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            border: 2px solid var(--light-gray);
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+        }
+
+        .option-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .option-btn svg {
+            width: 20px;
+            height: 20px;
+            opacity: 0.3;
+            transition: opacity 0.15s;
+        }
+
+        .option-btn.selected.yes {
+            background: var(--sage);
+            border-color: var(--sage);
+        }
+
+        .option-btn.selected.yes svg {
+            opacity: 1;
+            fill: white;
+        }
+
+        .option-btn.selected.maybe {
+            background: var(--terracotta-light);
+            border-color: var(--terracotta-light);
+        }
+
+        .option-btn.selected.maybe svg {
+            opacity: 1;
+            fill: white;
+        }
+
+        .option-btn.selected.no {
+            background: var(--light-gray);
+            border-color: var(--light-gray);
+        }
+
+        .option-btn.selected.no svg {
+            opacity: 1;
+            fill: var(--gray);
+        }
+
+        .submit-section {
+            text-align: center;
+            padding-top: 24px;
+        }
+
+        .submit-btn {
+            background: var(--sage);
+            color: white;
+            border: none;
+            padding: 16px 48px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(124, 144, 130, 0.3);
+        }
+
+        .submit-btn:hover {
+            background: var(--sage-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(124, 144, 130, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: var(--light-gray);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .responses-card {
+            margin-top: 32px;
+        }
+
+        .responses-card h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .responses-table {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .responses-table table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .responses-table th {
+            text-align: left;
+            padding: 12px 8px;
+            border-bottom: 2px solid var(--light-gray);
+            font-weight: 500;
+            color: var(--gray);
+            white-space: nowrap;
+        }
+
+        .responses-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+            text-align: center;
+        }
+
+        .responses-table td:first-child {
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .response-indicator {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .response-indicator.yes {
+            background: var(--sage);
+        }
+
+        .response-indicator.maybe {
+            background: var(--terracotta-light);
+        }
+
+        .response-indicator.no {
+            background: var(--light-gray);
+        }
+
+        .response-indicator svg {
+            width: 14px;
+            height: 14px;
+            fill: white;
+        }
+
+        .response-indicator.no svg {
+            fill: var(--gray);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray);
+        }
+
+        .status-message {
+            text-align: center;
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 16px;
+            font-weight: 500;
+        }
+
+        .status-message.success {
+            background: rgba(124, 144, 130, 0.15);
+            color: var(--sage-dark);
+        }
+
+        .status-message.error {
+            background: rgba(196, 120, 90, 0.15);
+            color: var(--terracotta);
+        }
+
+        .setup-notice {
+            background: rgba(196, 120, 90, 0.1);
+            border: 1px solid var(--terracotta-light);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+
+        .setup-notice strong {
+            color: var(--terracotta);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 24px 16px;
+            }
+
+            .card {
+                padding: 24px 20px;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+
+            .legend {
+                display: none;
+            }
+
+            .date-row {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .options {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="icon">
+                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            </div>
+            <h1>Barnbridge Neighborhood Meeting</h1>
+            <p class="subtitle">Help us find the best evening to discuss the new association</p>
+        </header>
+
+        <div id="setup-notice" class="setup-notice" style="display: none;">
+            <strong>Setup Required:</strong> This poll needs to be connected to a Google Sheet. 
+            See the README for setup instructions.
+        </div>
+
+        <div class="card">
+            <div class="name-section">
+                <label for="name">Your Name</label>
+                <input type="text" id="name" class="name-input" placeholder="Enter your name">
+            </div>
+
+            <div class="dates-header">
+                <h2>Select Your Availability</h2>
+                <div class="legend">
+                    <span><div class="legend-dot yes"></div> Yes</span>
+                    <span><div class="legend-dot maybe"></div> Maybe</span>
+                    <span><div class="legend-dot no"></div> No</span>
+                </div>
+            </div>
+
+            <div id="date-grid" class="date-grid">
+                <!-- Dates will be populated by JS -->
+            </div>
+
+            <div class="submit-section">
+                <button id="submit-btn" class="submit-btn">Submit Response</button>
+                <div id="status" class="status-message" style="display: none;"></div>
+            </div>
+        </div>
+
+        <div id="responses-section" class="card responses-card" style="display: none;">
+            <h2>Responses</h2>
+            <div id="responses-table" class="responses-table">
+                <div class="loading">Loading responses...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // CONFIGURATION - UPDATE THIS WITH YOUR SCRIPT URL
+        // ============================================
+        const SCRIPT_URL = https://script.google.com/macros/s/AKfycbzB-x9aX7ubgQOLxIGeWh8rvY9FONuwUdLPgmPBPyAAgl5xYsiJXARgbqApi6LnmfVstQ/exec;
+        // ============================================
+
+        // Date options: Evenings in first two weeks of January 2026
+        const dates = [
+            { id: 'jan1', day: 'Wed', full: 'January 1, 2026', evening: '7:00 PM' },
+            { id: 'jan2', day: 'Thu', full: 'January 2, 2026', evening: '7:00 PM' },
+            { id: 'jan3', day: 'Fri', full: 'January 3, 2026', evening: '7:00 PM' },
+            { id: 'jan4', day: 'Sat', full: 'January 4, 2026', evening: '7:00 PM' },
+            { id: 'jan5', day: 'Sun', full: 'January 5, 2026', evening: '7:00 PM' },
+            { id: 'jan6', day: 'Mon', full: 'January 6, 2026', evening: '7:00 PM' },
+            { id: 'jan7', day: 'Tue', full: 'January 7, 2026', evening: '7:00 PM' },
+            { id: 'jan8', day: 'Wed', full: 'January 8, 2026', evening: '7:00 PM' },
+            { id: 'jan9', day: 'Thu', full: 'January 9, 2026', evening: '7:00 PM' },
+            { id: 'jan10', day: 'Fri', full: 'January 10, 2026', evening: '7:00 PM' },
+            { id: 'jan11', day: 'Sat', full: 'January 11, 2026', evening: '7:00 PM' },
+            { id: 'jan12', day: 'Sun', full: 'January 12, 2026', evening: '7:00 PM' },
+            { id: 'jan13', day: 'Mon', full: 'January 13, 2026', evening: '7:00 PM' },
+            { id: 'jan14', day: 'Tue', full: 'January 14, 2026', evening: '7:00 PM' },
+        ];
+
+        // Store selections
+        const selections = {};
+        dates.forEach(d => selections[d.id] = null);
+
+        // Check if configured
+        const isConfigured = !SCRIPT_URL.includes('YOUR_GOOGLE');
+
+        // Icons
+        const icons = {
+            yes: '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>',
+            maybe: '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>',
+            no: '<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>'
+        };
+
+        // Render date grid
+        function renderDates() {
+            const grid = document.getElementById('date-grid');
+            grid.innerHTML = dates.map(date => `
+                <div class="date-row">
+                    <div class="date-info">
+                        <span class="date-day">${date.day} Evening</span>
+                        <span class="date-full">${date.full}</span>
+                        <span class="response-count" id="count-${date.id}"></span>
+                    </div>
+                    <div class="options">
+                        <button class="option-btn yes" data-date="${date.id}" data-value="yes" title="Yes">
+                            ${icons.yes}
+                        </button>
+                        <button class="option-btn maybe" data-date="${date.id}" data-value="maybe" title="Maybe">
+                            ${icons.maybe}
+                        </button>
+                        <button class="option-btn no" data-date="${date.id}" data-value="no" title="No">
+                            ${icons.no}
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add click handlers
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const dateId = btn.dataset.date;
+                    const value = btn.dataset.value;
+                    
+                    // Clear previous selection for this date
+                    document.querySelectorAll(`[data-date="${dateId}"]`).forEach(b => {
+                        b.classList.remove('selected');
+                    });
+                    
+                    // Set new selection
+                    btn.classList.add('selected');
+                    selections[dateId] = value;
+                });
+            });
+        }
+
+        // Load existing responses
+        async function loadResponses() {
+            if (!isConfigured) {
+                document.getElementById('setup-notice').style.display = 'block';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=get`);
+                const data = await response.json();
+                
+                if (data.responses && data.responses.length > 0) {
+                    renderResponsesTable(data.responses);
+                    updateCounts(data.responses);
+                    document.getElementById('responses-section').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error loading responses:', error);
+            }
+        }
+
+        // Update response counts
+        function updateCounts(responses) {
+            dates.forEach(date => {
+                const yesCount = responses.filter(r => r[date.id] === 'yes').length;
+                const maybeCount = responses.filter(r => r[date.id] === 'maybe').length;
+                const countEl = document.getElementById(`count-${date.id}`);
+                if (yesCount > 0 || maybeCount > 0) {
+                    const parts = [];
+                    if (yesCount > 0) parts.push(`${yesCount} yes`);
+                    if (maybeCount > 0) parts.push(`${maybeCount} maybe`);
+                    countEl.textContent = parts.join(', ');
+                }
+            });
+        }
+
+        // Render responses table
+        function renderResponsesTable(responses) {
+            const container = document.getElementById('responses-table');
+            
+            const headers = ['Name', ...dates.map(d => d.day + ' ' + d.full.split(' ')[1])];
+            
+            let html = '<table><thead><tr>';
+            headers.forEach(h => html += `<th>${h}</th>`);
+            html += '</tr></thead><tbody>';
+            
+            responses.forEach(resp => {
+                html += '<tr>';
+                html += `<td>${resp.name}</td>`;
+                dates.forEach(d => {
+                    const val = resp[d.id] || 'no';
+                    html += `<td><span class="response-indicator ${val}">${icons[val]}</span></td>`;
+                });
+                html += '</tr>';
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // Submit response
+        async function submitResponse() {
+            const name = document.getElementById('name').value.trim();
+            
+            if (!name) {
+                showStatus('Please enter your name', 'error');
+                return;
+            }
+
+            const hasSelection = Object.values(selections).some(v => v !== null);
+            if (!hasSelection) {
+                showStatus('Please select at least one date', 'error');
+                return;
+            }
+
+            if (!isConfigured) {
+                showStatus('Poll not configured. See README for setup.', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('submit-btn');
+            btn.disabled = true;
+            btn.textContent = 'Submitting...';
+
+            try {
+                const data = { name, ...selections };
+                
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                showStatus('Response submitted! Thank you.', 'success');
+                
+                // Reload responses after a brief delay
+                setTimeout(() => {
+                    loadResponses();
+                }, 1500);
+                
+            } catch (error) {
+                showStatus('Error submitting. Please try again.', 'error');
+                console.error(error);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Submit Response';
+            }
+        }
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status-message ${type}`;
+            status.style.display = 'block';
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    status.style.display = 'none';
+                }, 4000);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderDates();
+            loadResponses();
+            document.getElementById('submit-btn').addEventListener('click', submitResponse);
+        });
+    </script>
+</body>
+</html>
