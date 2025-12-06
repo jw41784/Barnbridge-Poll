@@ -632,21 +632,30 @@
 
             try {
                 const data = { name, ...selections };
-                
-                const response = await fetch(SCRIPT_URL, {
+
+                // Use form data for reliable Google Apps Script submission
+                const formData = new URLSearchParams();
+                formData.append('data', JSON.stringify(data));
+
+                await fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    body: formData
                 });
 
                 showStatus('Response submitted! Thank you.', 'success');
-                
+
+                // Clear selections after successful submit
+                document.querySelectorAll('.option-btn.selected').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                dates.forEach(d => selections[d.id] = null);
+
                 // Reload responses after a brief delay
                 setTimeout(() => {
                     loadResponses();
                 }, 1500);
-                
+
             } catch (error) {
                 showStatus('Error submitting. Please try again.', 'error');
                 console.error(error);

@@ -4,7 +4,7 @@ A simple web-based scheduling poll to help the Barnbridge neighborhood find the 
 
 ## Features
 
-- **Date Selection**: Poll for 14 dates (January 1-14, 2026) with Yes/Maybe/No options
+- **Date Selection**: Poll for 13 dates (January 2-14, 2026) with Yes/Maybe/No options
 - **Real-time Results**: View all responses in a summary table
 - **Response Counts**: See how many neighbors selected Yes or Maybe for each date
 - **Mobile Friendly**: Responsive design works on all devices
@@ -54,11 +54,11 @@ function doGet(e) {
 
 function doPost(e) {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  const data = JSON.parse(e.postData.contents);
+  const data = JSON.parse(e.parameter.data);
 
   // Set up headers if sheet is empty
   if (sheet.getLastRow() === 0) {
-    const headers = ['name', 'jan1', 'jan2', 'jan3', 'jan4', 'jan5', 'jan6', 'jan7',
+    const headers = ['name', 'jan2', 'jan3', 'jan4', 'jan5', 'jan6', 'jan7',
                      'jan8', 'jan9', 'jan10', 'jan11', 'jan12', 'jan13', 'jan14', 'timestamp'];
     sheet.appendRow(headers);
   }
@@ -66,7 +66,7 @@ function doPost(e) {
   // Add response
   const row = [
     data.name,
-    data.jan1 || '', data.jan2 || '', data.jan3 || '', data.jan4 || '',
+    data.jan2 || '', data.jan3 || '', data.jan4 || '',
     data.jan5 || '', data.jan6 || '', data.jan7 || '', data.jan8 || '',
     data.jan9 || '', data.jan10 || '', data.jan11 || '', data.jan12 || '',
     data.jan13 || '', data.jan14 || '',
@@ -112,7 +112,7 @@ Edit the `dates` array in `index.html`:
 
 ```javascript
 const dates = [
-    { id: 'jan1', day: 'Wed', full: 'January 1, 2026' },
+    { id: 'jan2', day: 'Thu', full: 'January 2, 2026' },
     // ... add or modify dates
 ];
 ```
